@@ -1,10 +1,9 @@
-package tcp_listener
+package main
 
 import (
-	"net"
 	"fmt"
 )
 
 func main() {
-	fmt.P
+	fmt.Println("Starting TCP connection")
 }
