@@ -42,10 +42,9 @@ func (r *Resp) Read() (Value, error) {
 	case ARRAY:
 		return r.readArray()
 	case BULK:
-		// return r.readBulk()
-		return Value{}, nil
+		return r.readBulk()
 	default:
-		fmt.Println("Unknown type: %v", string(_type))
+		fmt.Printf("Unknown type: %v", string(_type))
 		return Value{}, nil
 	}
 }
@@ -67,6 +66,27 @@ func (r *Resp) readArray() (Value, error) {
 		}
 		v.array = append(v.array, val)
 	}
+	return v, nil
+}
+
+// TODO: can we use readLine to read this?
+func (r *Resp) readBulk() (Value, error) {
+	v := Value{}
+	v.typ = "bulk"
+
+	len, _, err := r.readInteger()
+	if err != nil {
+		return v, err
+	}
+
+	bulk := make([]byte, len)
+
+	r.reader.Read(bulk)
+
+	v.bulk = string(bulk)
+
+	r.readLine()
+
 	return v, nil
 }
 
