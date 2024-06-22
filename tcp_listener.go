@@ -21,9 +21,8 @@ func main() {
 	}
 
 	for {
-		buf := make([]byte, 1024)
-
-		_, err = conn.Read(buf)
+		resp := NewResp(conn)
+		value, err := resp.Read()
 		if err != nil {
 			if err == io.EOF {
 				break
@@ -31,7 +30,7 @@ func main() {
 			fmt.Println("error reading from client: ", err.Error())
 			os.Exit(1)
 		}
-
+		fmt.Println(value)
 		conn.Write([]byte("+OK\r\n"))
 	}
 
