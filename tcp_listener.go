@@ -32,6 +32,8 @@ func main() {
 			os.Exit(1)
 		}
 
+		fmt.Println([]byte(string(buf[:n])))
+
 		conn.Write([]byte("+OK\r\n"))
 	}
 
