@@ -40,8 +40,7 @@ func (r *Resp) Read() (Value, error) {
 
 	switch _type {
 	case ARRAY:
-		// return r.readArray()
-		return Value{}, nil
+		return r.readArray()
 	case BULK:
 		// return r.readBulk()
 		return Value{}, nil
@@ -49,6 +48,26 @@ func (r *Resp) Read() (Value, error) {
 		fmt.Println("Unknown type: %v", string(_type))
 		return Value{}, nil
 	}
+}
+
+func (r *Resp) readArray() (Value, error) {
+	v := Value{}
+	v.typ = "array"
+
+	len, _, err := r.readInteger()
+	if err != nil {
+		return v, err
+	}
+
+	v.array = make([]Value, 0)
+	for i := 0; i < len; i++ {
+		val, err := r.Read()
+		if err != nil {
+			return v, err
+		}
+		v.array = append(v.array, val)
+	}
+	return v, nil
 }
 
 func (r *Resp) readLine() (line []byte, n int, err error) {
