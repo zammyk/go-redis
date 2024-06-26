@@ -15,7 +15,7 @@ func NewSerializer(w io.Writer) *Serializer {
 func (v Value) Serialize() []byte {
 	switch v.typ {
 	case "array":
-		return []byte{}
+		return v.serializeString()
 	case "bulk":
 		return []byte{}
 	case "string":
@@ -27,4 +27,13 @@ func (v Value) Serialize() []byte {
 	default:
 		return []byte{}
 	}
+}
+
+func (v Value) serializeString() []byte {
+	var bytes []byte
+	bytes = append(bytes, STRING)
+	bytes = append(bytes, v.str...)
+	bytes = append(bytes, '\r', '\n')
+
+	return bytes
 }
