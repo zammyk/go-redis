@@ -22,9 +22,9 @@ func (v Value) Serialize() []byte {
 	case "string":
 		return v.serializeString()
 	case "null":
-		return []byte{}
+		return v.serializeNull()
 	case "error":
-		return []byte{}
+		return v.serializeError()
 	default:
 		return []byte{}
 	}
@@ -62,4 +62,17 @@ func (v Value) serializeArray() []byte {
 	}
 
 	return bytes
+}
+
+func (v Value) serializeError() []byte {
+	var bytes []byte
+	bytes = append(bytes, ERROR)
+	bytes = append(bytes, v.str...)
+	bytes = append(bytes, '\r', '\n')
+
+	return bytes
+}
+
+func (v Value) serializeNull() []byte {
+	return []byte("$-1\r\n")
 }
