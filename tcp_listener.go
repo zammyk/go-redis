@@ -22,6 +22,8 @@ func main() {
 
 	for {
 		resp := NewResp(conn)
+		writer := NewWriter(conn)
+
 		value, err := resp.Read()
 		if err != nil {
 			if err == io.EOF {
@@ -30,8 +32,9 @@ func main() {
 			fmt.Println("error reading from client: ", err.Error())
 			os.Exit(1)
 		}
-		fmt.Println(value)
-		conn.Write([]byte("+OK\r\n"))
+
+		_ = value
+		writer.Write(Value{typ: "string", str: "OK"})
 	}
 
 	defer conn.Close()

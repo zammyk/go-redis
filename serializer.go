@@ -5,12 +5,23 @@ import (
 	"strconv"
 )
 
-type Serializer struct {
+type Writer struct {
 	writer io.Writer
 }
 
-func NewSerializer(w io.Writer) *Serializer {
-	return &Serializer{writer: w}
+func (w *Writer) Write(v Value) error {
+	var bytes = v.Serialize()
+
+	_, err := w.writer.Write(bytes)
+	if err != nil {
+		return err
+	}
+
+	return nil
+}
+
+func NewWriter(w io.Writer) *Writer {
+	return &Writer{writer: w}
 }
 
 func (v Value) Serialize() []byte {
