@@ -16,11 +16,11 @@ func NewSerializer(w io.Writer) *Serializer {
 func (v Value) Serialize() []byte {
 	switch v.typ {
 	case "array":
-		return v.serializeString()
+		return v.serializeArray()
 	case "bulk":
-		return []byte{}
+		return v.serializeBulk()
 	case "string":
-		return []byte{}
+		return v.serializeString()
 	case "null":
 		return []byte{}
 	case "error":
@@ -46,6 +46,20 @@ func (v Value) serializeBulk() []byte {
 	bytes = append(bytes, '\r', '\n')
 	bytes = append(bytes, v.bulk...)
 	bytes = append(bytes, '\r', '\n')
+
+	return bytes
+}
+
+func (v Value) serializeArray() []byte {
+	len := len(v.array)
+	var bytes []byte
+	bytes = append(bytes, ARRAY)
+	bytes = append(bytes, strconv.Itoa(len)...)
+	bytes = append(bytes, '\r', '\n')
+
+	for i := 0; i < len; i++ {
+		bytes = append(bytes, v.array[i].Serialize()...)
+	}
 
 	return bytes
 }
