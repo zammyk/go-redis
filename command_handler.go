@@ -1,7 +1,7 @@
 package main
 
 var Handlers = map[string]func([]Value) Value{
-	"ping": ping,
+	"PING": ping,
 }
 
 func ping(args []Value) Value {
