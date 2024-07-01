@@ -3,6 +3,7 @@ package main
 var Handlers = map[string]func([]Value) Value{
 	"PING": ping,
 	"SET":  set,
+	"GET":  get,
 }
 
 func ping(args []Value) Value {
@@ -25,4 +26,22 @@ func set(args []Value) Value {
 	SETsMu.Unlock()
 
 	return Value{typ: "string", str: "OK"}
+}
+
+func get(args []Value) Value {
+	if len(args) != 1 {
+		return Value{typ: "error", str: "ERR wrong number of arguments for 'get' command"}
+	}
+
+	key := args[0].bulk
+
+	SETsMu.RLock()
+	value, ok := SETs[key]
+	SETsMu.RUnlock()
+
+	if !ok {
+		return Value{typ: "null"}
+	}
+
+	return Value{typ: "bulk", bulk: value}
 }
